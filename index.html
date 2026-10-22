@@ -165,7 +165,7 @@
         <div class="pt-2 border-t border-slate-100 space-y-4">
           <div class="flex items-center justify-between">
             <label for="fontSizeSlider" class="text-xs font-semibold text-slate-700">Slug Font Size</label>
-            <span id="fontSizeVal" class="text-xs font-mono text-slate-500">42px</span>
+            <span id="fontSizeVal" class="text-xs font-mono text-slate-500">48px</span>
           </div>
           <input type="range" id="fontSizeSlider" min="24" max="64" value="42" class="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600" />
 
@@ -455,50 +455,7 @@
   </script>
 </body>
 </html>
-```
-      ctx.font = fontSpec;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'alphabetic';
-      ctx.fillText(slugText, exportCanvas.width / 2, textY);
 
-      return exportCanvas;
-    }
-
-    // Export Functionality 1: Download High-Res PNG
-    function downloadPNG() {
-      const exportCanvas = generateExportCanvas();
-      const slug = slugInput.value.trim() || 'card4376';
-      const link = document.createElement('a');
-      link.download = `Tapixa_QR_${slug}.png`;
-      link.href = exportCanvas.toDataURL('image/png', 1.0);
-      link.click();
-    }
-
-    // Export Functionality 2: Copy to Clipboard
-    function copyImageToClipboard() {
-      const exportCanvas = generateExportCanvas();
-      exportCanvas.toBlob((blob) => {
-        try {
-          const item = new ClipboardItem({ 'image/png': blob });
-          navigator.clipboard.write([item]).then(() => {
-            showToast('Image copied to clipboard!');
-          }).catch(() => {
-            showToast('Failed to copy. Download PNG instead.');
-          });
-        } catch (err) {
-          showToast('Clipboard access restricted in browser.');
-        }
-      }, 'image/png');
-    }
-
-    // Helper Toast Notification
-    function showToast(message) {
-      const toast = document.getElementById('toast');
-      toast.innerText = message;
-      toast.classList.remove('opacity-0', 'pointer-events-none');
-      setTimeout(() => {
-        toast.classList.add('opacity-0', 'pointer-events-none');
-      }, 2500);
     }
   </script>
 </body>
