@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tapixa QR Code Card Generator</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Plus Jakarta Sans for crisp, modern typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <!-- QR Code Library (qrcodeJS) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    
+    .reference-bg {
+      background-color: #FAFAF8;
+    }
+
+    .slug-text-style {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    input[type="color"]::-webkit-color-swatch-wrapper {
+      padding: 0;
+    }
+    input[type="color"]::-webkit-color-swatch {
+      border: none;
+      border-radius: 9999px;
+    }
+  </style>
+</head>
+<body class="bg-slate-100 min-h-screen text-slate-800 flex flex-col justify-between">
+
+  <!-- Header -->
+  <header class="bg-white border-b border-slate-200 py-4 px-6 sticky top-0 z-30 shadow-sm">
+    <div class="max-w-6xl mx-auto flex justify-between items-center">
+      <div class="flex items-center space-x-3">
+        <div class="w-9 h-9 bg-slate-900 rounded-xl flex items-center justify-center text-white font-extrabold text-lg shadow-inner">
+          T
+        </div>
+        <div>
+          <h1 class="font-bold text-slate-900 text-lg leading-tight">Tapixa QR Studio</h1>
+          <p class="text-xs text-slate-500">NFC & QR Card Showcase Generator</p>
+        </div>
+      </div>
+      <div class="text-xs font-semibold px-3 py-1 bg-blue-50 text-blue-700 rounded-full border border-blue-200">
+        Tapixa Ready Format
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="max-w-6xl mx-auto w-full px-4 py-8 flex-1">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      
+      <!-- Control Panel (Left Column) -->
+      <div class="lg:col-span-5 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6">
+        <h2 class="text-base font-bold text-slate-900 flex items-center justify-between border-b pb-3 border-slate-100">
+          <span>Configuration</span>
+          <span class="text-xs font-normal text-slate-400">Card Setup</span>
+        </h2>
+
+        <!-- Input 1: Link/URL -->
+        <div>
+          <label for="urlInput" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
+            Destination URL / Link
+          </label>
+          <input 
+            type="url" 
+            id="urlInput" 
+            value="https://tapixa.com/card4376" 
+            placeholder="https://tapixa.com/your-slug" 
+            class="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all"
+          />
+        </div>
+
+        <!-- Input 2: Card Slug Text -->
+        <div>
+          <label for="slugInput" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
+            Card Slug Text
+          </label>
+          <input 
+            type="text" 
+            id="slugInput" 
+            value="card4376" 
+            placeholder="e.g. card4376" 
+            class="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all font-mono"
+          />
+        </div>
+
+        <!-- Section: Layout Variant Switcher -->
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
+            Layout Variant
+          </label>
+          <div class="grid grid-cols-2 gap-2">
+            <button 
+              id="layoutBelowBtn" 
+              type="button"
+              onclick="setLayout('below')"
+              class="flex items-center justify-center space-x-2 py-2.5 px-3 rounded-xl border text-xs font-semibold transition-all border-blue-600 bg-blue-50/70 text-blue-700 shadow-sm"
+            >
+              <span>Slug Below</span>
+            </button>
+
+            <button 
+              id="layoutAboveBtn" 
+              type="button"
+              onclick="setLayout('above')"
+              class="flex items-center justify-center space-x-2 py-2.5 px-3 rounded-xl border text-xs font-semibold transition-all border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100"
+            >
+              <span>Slug Above</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Section: Color Theme Switcher -->
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
+            Color Preset & Theme
+          </label>
+          <div class="grid grid-cols-3 gap-2 mb-3">
+            <button 
+              type="button" 
+              onclick="setColor('#002b5c')" 
+              class="flex flex-col items-center p-2.5 rounded-xl border border-slate-200 hover:border-slate-400 transition-all text-left group"
+            >
+              <span class="w-6 h-6 rounded-full bg-[#002b5c] border border-black/10 shadow-sm mb-1.5 group-hover:scale-105 transition-transform"></span>
+              <span class="text-[11px] font-semibold text-slate-700">Navy Blue</span>
+            </button>
+
+            <button 
+              type="button" 
+              onclick="setColor('#000000')" 
+              class="flex flex-col items-center p-2.5 rounded-xl border border-slate-200 hover:border-slate-400 transition-all text-left group"
+            >
+              <span class="w-6 h-6 rounded-full bg-black border border-black/10 shadow-sm mb-1.5 group-hover:scale-105 transition-transform"></span>
+              <span class="text-[11px] font-semibold text-slate-700">Minimal Black</span>
+            </button>
+
+            <label class="flex flex-col items-center p-2.5 rounded-xl border border-slate-200 hover:border-slate-400 transition-all cursor-pointer group">
+              <input type="color" id="customColorPicker" value="#002b5c" class="sr-only" onchange="setColor(this.value)" />
+              <span id="customColorPreview" class="w-6 h-6 rounded-full bg-indigo-600 border border-black/10 shadow-sm mb-1.5 group-hover:scale-105 transition-transform flex items-center justify-center">
+                <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+              </span>
+              <span class="text-[11px] font-semibold text-slate-700">Custom Hex</span>
+            </label>
+          </div>
+
+          <div class="flex items-center justify-between px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-mono text-slate-600">
+            <span>Active Code:</span>
+            <span id="activeHexText" class="font-bold text-slate-900">#002B5C</span>
+          </div>
+        </div>
+
+        <!-- Section: Fine Tuning (Zoom & Margins) -->
+        <div class="pt-2 border-t border-slate-100 space-y-4">
+          <div class="flex items-center justify-between">
+            <label for="fontSizeSlider" class="text-xs font-semibold text-slate-700">Slug Font Size</label>
+            <span id="fontSizeVal" class="text-xs font-mono text-slate-500">42px</span>
+          </div>
+          <input type="range" id="fontSizeSlider" min="24" max="64" value="42" class="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600" />
+
+          <div class="flex items-center justify-between">
+            <label for="spacingSlider" class="text-xs font-semibold text-slate-700">QR-to-Slug Spacing</label>
+            <span id="spacingVal" class="text-xs font-mono text-slate-500">14px</span>
+          </div>
+          <input type="range" id="spacingSlider" min="2" max="30" value="14" class="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600" />
+        </div>
+
+      </div>
+
+      <!-- Preview Canvas Area (Right Column) -->
+      <div class="lg:col-span-7 flex flex-col items-center">
+        
+        <div class="w-full bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm flex flex-col items-center justify-center">
+          <div class="flex items-center justify-between w-full mb-4 px-2">
+            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Identical Showcase Preview</span>
+            <span class="text-[11px] bg-emerald-50 text-emerald-600 font-semibold px-2.5 py-0.5 rounded-full border border-emerald-200">Zoomed & Crisp Match</span>
+          </div>
+
+          <!-- Canvas Container styled to mimic reference backdrop with minimal padding for zoom -->
+          <div class="reference-bg p-6 sm:p-8 rounded-2xl shadow-inner border border-stone-200/60 flex items-center justify-center max-w-full overflow-hidden">
+            
+            <div id="cardContainer" class="flex flex-col items-center justify-center">
+              
+              <div id="rawQr" class="hidden"></div>
+
+              <div id="qrWrapper" class="relative">
+                <canvas id="qrCanvas" class="block max-w-full h-auto" style="width: 340px; height: 340px; image-rendering: crisp-edges;"></canvas>
+              </div>
+
+              <div 
+                id="slugTextDisplay" 
+                class="slug-text-style transition-all text-center select-all"
+                style="color: #002b5c; font-size: 42px; margin-top: 14px;"
+              >
+                card4376
+              </div>
+
+            </div>
+
+          </div>
+
+          <!-- Actions & Downloads -->
+          <div class="w-full mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <button 
+              type="button" 
+              onclick="downloadPNG()" 
+              class="w-full py-3 px-4 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-bold text-sm shadow-md transition-all flex items-center justify-center space-x-2 active:scale-95"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+              <span>Download High-Res PNG</span>
+            </button>
+
+            <button 
+              type="button" 
+              onclick="copyImageToClipboard()" 
+              class="w-full py-3 px-4 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl font-bold text-sm border border-slate-200 transition-all flex items-center justify-center space-x-2 active:scale-95"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+              <span>Copy Image</span>
+            </button>
+          </div>
+
+          <div id="toast" class="opacity-0 pointer-events-none transition-opacity duration-300 mt-3 text-xs font-semibold text-emerald-600 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-lg">
+            Image copied to clipboard!
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-white border-t border-slate-200 py-4 px-6 text-center text-xs text-slate-400">
+    Tapixa QR Generator &copy; 2026 — Pixel-Perfect Custom QR Code Cards
+  </footer>
+
+  <!-- Application Logic Script -->
+  <script>
+    let currentColor = '#002b5c'; 
+    let currentLayout = 'below';  
+    let qrInstance = null;
+
+    const urlInput = document.getElementById('urlInput');
+    const slugInput = document.getElementById('slugInput');
+    const slugTextDisplay = document.getElementById('slugTextDisplay');
+    const cardContainer = document.getElementById('cardContainer');
+    const activeHexText = document.getElementById('activeHexText');
+    const customColorPicker = document.getElementById('customColorPicker');
+    const customColorPreview = document.getElementById('customColorPreview');
+    const fontSizeSlider = document.getElementById('fontSizeSlider');
+    const fontSizeVal = document.getElementById('fontSizeVal');
+    const spacingSlider = document.getElementById('spacingSlider');
+    const spacingVal = document.getElementById('spacingVal');
+
+    window.addEventListener('DOMContentLoaded', () => {
+      document.fonts.ready.then(() => {
+        renderCard();
+      });
+
+      urlInput.addEventListener('input', renderCard);
+      slugInput.addEventListener('input', () => {
+        slugTextDisplay.innerText = slugInput.value || 'card4376';
+        renderCard();
+      });
+
+      fontSizeSlider.addEventListener('input', (e) => {
+        fontSizeVal.innerText = e.target.value + 'px';
+        updateSlugStyles();
+      });
+
+      spacingSlider.addEventListener('input', (e) => {
+        spacingVal.innerText = e.target.value + 'px';
+        updateSlugStyles();
+      });
+    });
+
+    function setColor(hex) {
+      currentColor = hex;
+      activeHexText.innerText = hex.toUpperCase();
+      customColorPicker.value = hex;
+      customColorPreview.style.backgroundColor = hex;
+      renderCard();
+    }
+
+    function setLayout(layout) {
+      currentLayout = layout;
+      const belowBtn = document.getElementById('layoutBelowBtn');
+      const aboveBtn = document.getElementById('layoutAboveBtn');
+
+      if (layout === 'below') {
+        cardContainer.style.flexDirection = 'column';
+        belowBtn.className = "flex items-center justify-center space-x-2 py-2.5 px-3 rounded-xl border text-xs font-semibold transition-all border-blue-600 bg-blue-50/70 text-blue-700 shadow-sm";
+        aboveBtn.className = "flex items-center justify-center space-x-2 py-2.5 px-3 rounded-xl border text-xs font-semibold transition-all border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100";
+      } else {
+        cardContainer.style.flexDirection = 'column-reverse';
+        aboveBtn.className = "flex items-center justify-center space-x-2 py-2.5 px-3 rounded-xl border text-xs font-semibold transition-all border-blue-600 bg-blue-50/70 text-blue-700 shadow-sm";
+        belowBtn.className = "flex items-center justify-center space-x-2 py-2.5 px-3 rounded-xl border text-xs font-semibold transition-all border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100";
+      }
+      updateSlugStyles();
+    }
+
+    function updateSlugStyles() {
+      const fontSize = fontSizeSlider.value;
+      const spacing = spacingSlider.value;
+
+      slugTextDisplay.style.fontSize = fontSize + 'px';
+      slugTextDisplay.style.color = currentColor;
+
+      if (currentLayout === 'below') {
+        slugTextDisplay.style.marginTop = spacing + 'px';
+        slugTextDisplay.style.marginBottom = '0px';
+      } else {
+        slugTextDisplay.style.marginBottom = spacing + 'px';
+        slugTextDisplay.style.marginTop = '0px';
+      }
+    }
+
+    function renderCard() {
+      const url = urlInput.value.trim() || 'https://tapixa.com';
+      const slug = slugInput.value.trim() || 'card4376';
+      
+      slugTextDisplay.innerText = slug;
+      updateSlugStyles();
+
+      const rawQrDiv = document.getElementById('rawQr');
+      rawQrDiv.innerHTML = '';
+
+      // High resolution rendering inside hidden div (High DPI scale for clarity)
+      qrInstance = new QRCode(rawQrDiv, {
+        text: url,
+        width: 500,
+        height: 500,
+        colorDark: currentColor,
+        colorLight: "#FAFAF8",
+        correctLevel: QRCode.CorrectLevel.H
+      });
+
+      setTimeout(() => {
+        const generatedImg = rawQrDiv.querySelector('img');
+        const generatedCanvas = rawQrDiv.querySelector('canvas');
+        const targetCanvas = document.getElementById('qrCanvas');
+        const ctx = targetCanvas.getContext('2d');
+
+        if (generatedCanvas) {
+          targetCanvas.width = 500;
+          targetCanvas.height = 500;
+          ctx.imageSmoothingEnabled = false; // Ensures sharp pixelated QR modules like reference
+          ctx.drawImage(generatedCanvas, 0, 0);
+        } else if (generatedImg) {
+          targetCanvas.width = 500;
+          targetCanvas.height = 500;
+          const img = new Image();
+          img.onload = function() {
+            ctx.imageSmoothingEnabled = false;
+            ctx.drawImage(img, 0, 0);
+          };
+          img.src = generatedImg.src;
+        }
+      }, 50);
+    }
+
+    function generateExportCanvas() {
+      const exportCanvas = document.createElement('canvas');
+      const ctx = exportCanvas.getContext('2d');
+
+      const qrCanvas = document.getElementById('qrCanvas');
+      const slugText = slugInput.value.trim() || 'card4376';
+      
+      const fontSize = parseInt(fontSizeSlider.value, 10);
+      const spacing = parseInt(spacingSlider.value, 10);
+      const padding = 36; // Minimized outer padding for a zoomed-in look matching reference
+
+      const qrWidth = 500;
+      const qrHeight = 500;
+      
+      exportCanvas.width = qrWidth + (padding * 2);
+      
+      const fontSpec = `800 ${fontSize * 1.25}px 'Plus Jakarta Sans', sans-serif`;
+      ctx.font = fontSpec;
+      const textHeight = fontSize * 1.25;
+
+      exportCanvas.height = qrHeight + textHeight + spacing + (padding * 2);
+
+      ctx.fillStyle = '#FAFAF8';
+      ctx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
+
+      let qrY, textY;
+
+      if (currentLayout === 'below') {
+        qrY = padding;
+        textY = padding + qrHeight + spacing + (fontSize);
+      } else {
+        textY = padding + fontSize;
+        qrY = padding + textHeight + spacing;
+      }
+
+      ctx.imageSmoothingEnabled = false;
+      ctx.drawImage(qrCanvas, padding, qrY, qrWidth, qrHeight);
+
+      ctx.fillStyle = currentColor;
+      ctx.font = fontSpec;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'alphabetic';
+      ctx.fillText(slugText, exportCanvas.width / 2, textY);
+
+      return exportCanvas;
+    }
+
+    function downloadPNG() {
+      const exportCanvas = generateExportCanvas();
+      const slug = slugInput.value.trim() || 'card4376';
+      const link = document.createElement('a');
+      link.download = `Tapixa_QR_${slug}.png`;
+      link.href = exportCanvas.toDataURL('image/png', 1.0);
+      link.click();
+    }
+
+    function copyImageToClipboard() {
+      const exportCanvas = generateExportCanvas();
+      exportCanvas.toBlob((blob) => {
+        try {
+          const item = new ClipboardItem({ 'image/png': blob });
+          navigator.clipboard.write([item]).then(() => {
+            showToast('Image copied to clipboard!');
+          }).catch(() => {
+            showToast('Failed to copy. Download PNG instead.');
+          });
+        } catch (err) {
+          showToast('Clipboard access restricted in browser.');
+        }
+      }, 'image/png');
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.innerText = message;
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'pointer-events-none');
+      }, 2500);
+    }
+  </script>
+</body>
+</html>
+```
+      ctx.font = fontSpec;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'alphabetic';
+      ctx.fillText(slugText, exportCanvas.width / 2, textY);
+
+      return exportCanvas;
+    }
+
+    // Export Functionality 1: Download High-Res PNG
+    function downloadPNG() {
+      const exportCanvas = generateExportCanvas();
+      const slug = slugInput.value.trim() || 'card4376';
+      const link = document.createElement('a');
+      link.download = `Tapixa_QR_${slug}.png`;
+      link.href = exportCanvas.toDataURL('image/png', 1.0);
+      link.click();
+    }
+
+    // Export Functionality 2: Copy to Clipboard
+    function copyImageToClipboard() {
+      const exportCanvas = generateExportCanvas();
+      exportCanvas.toBlob((blob) => {
+        try {
+          const item = new ClipboardItem({ 'image/png': blob });
+          navigator.clipboard.write([item]).then(() => {
+            showToast('Image copied to clipboard!');
+          }).catch(() => {
+            showToast('Failed to copy. Download PNG instead.');
+          });
+        } catch (err) {
+          showToast('Clipboard access restricted in browser.');
+        }
+      }, 'image/png');
+    }
+
+    // Helper Toast Notification
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.innerText = message;
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'pointer-events-none');
+      }, 2500);
+    }
+  </script>
+</body>
+</html>
